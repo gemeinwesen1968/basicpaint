@@ -1,27 +1,28 @@
 #include "Render.h"
 
+
 void drawStroke(const std::vector<drawn>& stroke) {
-    for (const auto& circle : stroke) {
-        DrawCircleV(circle.pos, circle.r, circle.color);
+    for (size_t i = 1; i < stroke.size(); i++) {
+        DrawLineEx(stroke[i - 1].pos, stroke[i].pos, stroke[i].r * 2, stroke[i].color);
     }
 }
 
-Vector2 MDownStroke(Vector2 prevPos, Vector2 ballPos, Color ballColor, std::vector<drawn>& currentStroke)
+Vector2 MDownStroke(Vector2 prevPos, Vector2 currentPos, Color strokeColor, std::vector<drawn>& currentStroke, float strokeSize)
 {
-    float distance = Vector2Distance(prevPos, ballPos);
-    if (distance > 1.0f) {
-        int steps = (int)(distance / 2.0f);
-        for (int i = 0; i < steps; i++) {
+    float distance = Vector2Distance(prevPos, currentPos);
+    float maxGap = strokeSize;  // Adjust gap based on stroke size
+
+    if (distance > maxGap) {
+        int steps = (int)(distance / maxGap);
+        for (int i = 1; i <= steps; i++) {
             float t = (float)i / steps;
-            Vector2 interpPos = Vector2Lerp(prevPos, ballPos, t);
-            drawn interpolatedCircle = { interpPos, ballColor, 5 };
-            currentStroke.push_back(interpolatedCircle);
+            Vector2 interpPos = Vector2Lerp(prevPos, currentPos, t);
+            currentStroke.push_back({ interpPos, strokeColor, strokeSize / 2 });
         }
     }
-    drawn finalCircle = { ballPos, ballColor, 5 };
-    currentStroke.push_back(finalCircle);
-    prevPos = ballPos;
-    return prevPos;
+    currentStroke.push_back({ currentPos, strokeColor, strokeSize / 2 });
+
+    return currentPos;
 }
 
 void addCurrStroke(RenderTexture& renderTexture, std::vector<drawn>& currentStroke, std::vector<std::vector<drawn>>& strokes) {

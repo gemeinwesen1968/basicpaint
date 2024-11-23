@@ -7,7 +7,7 @@
 //TODO create a layer class
 //TODO create a input handler class
 //TODO create a texture handler class
-
+//TODO when slow, lines look seperate
 
 int main()
 {
@@ -23,6 +23,8 @@ int main()
 
     Vector2 previousPos = GetMousePosition();
 
+    float size = 5;
+
     RenderTexture2D renderTexture = LoadRenderTexture(screenWidth, screenHeight);
     BeginTextureMode(renderTexture);
     ClearBackground(RAYWHITE);
@@ -32,7 +34,7 @@ int main()
     {
         const Vector2 ballPos = GetMousePosition();
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            previousPos = MDownStroke(previousPos, ballPos, ballColor, currentStroke);
+            previousPos = MDownStroke(previousPos, ballPos, ballColor, currentStroke, size);
         }
         else {
             previousPos = ballPos;
@@ -51,11 +53,9 @@ int main()
             }
             EndTextureMode();
         }
-
         
         if (IsKeyPressed(KEY_X)) {
             strokes.clear();
-
             BeginTextureMode(renderTexture);
             ClearBackground(RAYWHITE);
             EndTextureMode();
@@ -77,13 +77,21 @@ int main()
             ballColor = BLACK;
         }
         
+        if (IsKeyPressed(KEY_A)) {
+            size = size + 0.2f;
+        }
+
+        if (IsKeyPressed(KEY_S)) {
+            size = size - 0.2f;
+        }
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
         DrawTextureRec(renderTexture.texture, { 0, 0, (float)renderTexture.texture.width, (float)-renderTexture.texture.height }, { 0, 0 }, WHITE);
         drawStroke(currentStroke);
 
-        DrawCircleV(ballPos, 5, ballColor);
+        DrawCircleV(ballPos, size, ballColor);
         colorMenu.draw();
 
         int fps = GetFPS();
