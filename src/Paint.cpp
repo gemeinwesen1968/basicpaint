@@ -1,4 +1,5 @@
 #include <vector>
+#include <cstdio>
 #include "../include/raylib.h"
 #include "ColorSelectMenu.h"
 #include "Render.h"
@@ -9,10 +10,17 @@
 //TODO create a texture handler class
 //TODO when slow, lines look seperate
 
+void saveAsPNG(RenderTexture2D& renderTexture, const char* filename) {
+    Image image = LoadImageFromTexture(renderTexture.texture);
+    ExportImage(image, filename);
+    UnloadImage(image);
+    printf("Image saved as: %s\n", filename);
+}
+
 int main()
 {
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
+    constexpr int screenWidth = 1000;
+    constexpr int screenHeight = 750;
     InitWindow(screenWidth, screenHeight, "PAINT");
     Color ballColor = BLACK;
     ColorSelectMenu colorMenu;
@@ -85,6 +93,10 @@ int main()
             size = size - 0.2f;
         }
 
+        if (IsKeyPressed(KEY_P)) {
+            saveAsPNG(renderTexture, "images/image.png");
+        }
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -92,7 +104,6 @@ int main()
         drawStroke(currentStroke);
 
         DrawCircleV(ballPos, size, ballColor);
-        colorMenu.draw();
 
         int fps = GetFPS();
         DrawText(TextFormat("%i", fps), 700, 0, 30, PINK);

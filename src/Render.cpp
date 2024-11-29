@@ -10,7 +10,7 @@ void drawStroke(const std::vector<drawn>& stroke) {
 Vector2 MDownStroke(Vector2 prevPos, Vector2 currentPos, Color strokeColor, std::vector<drawn>& currentStroke, float strokeSize)
 {
     float distance = Vector2Distance(prevPos, currentPos);
-    float maxGap = strokeSize;  // Adjust gap based on stroke size
+    float maxGap = 1.0f;  // Adjust gap based on stroke size
 
     if (distance > maxGap) {
         int steps = (int)(distance / maxGap);
@@ -32,6 +32,3 @@ void addCurrStroke(RenderTexture& renderTexture, std::vector<drawn>& currentStro
     strokes.push_back(currentStroke);
     currentStroke.clear();
 }
-
-
-
